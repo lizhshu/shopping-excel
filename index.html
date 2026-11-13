@@ -202,8 +202,8 @@ button { cursor: pointer; }
   top: calc(100% + 6px);
   left: 0;
   z-index: 30;
-  width: 260px;
-  max-height: 340px;
+  width: 240px;
+  max-height: min(300px, 40vh);
   display: flex;
   flex-direction: column;
   background: var(--surface);
@@ -229,7 +229,17 @@ button { cursor: pointer; }
 }
 .link-btn:hover { text-decoration: underline; }
 
-.dropdown-list { overflow-y: auto; padding: 6px 0; }
+.dropdown-list { overflow-y: auto; padding: 6px 0; flex: 1 1 auto; min-height: 0; }
+
+.dropdown-foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 8px 14px;
+  border-top: 1px solid var(--border);
+  flex: none;
+}
+.dropdown-btn { height: 28px; padding: 0 14px; font-size: 13px; flex: none; }
 
 .cat-option {
   display: flex;
@@ -694,6 +704,10 @@ button { cursor: pointer; }
           <button id="brandClearBtn" class="link-btn" type="button">清空</button>
         </div>
         <div id="brandList" class="dropdown-list"></div>
+        <div class="dropdown-foot">
+          <button id="brandCancelBtn" class="btn btn-quiet dropdown-btn" type="button">取消</button>
+          <button id="brandApplyBtn" class="btn btn-primary dropdown-btn" type="button">确认</button>
+        </div>
       </div>
     </div>
     <div class="filter-group">
@@ -706,6 +720,10 @@ button { cursor: pointer; }
           <button id="catClearBtn" class="link-btn" type="button">清空</button>
         </div>
         <div id="categoryList" class="dropdown-list"></div>
+        <div class="dropdown-foot">
+          <button id="catCancelBtn" class="btn btn-quiet dropdown-btn" type="button">取消</button>
+          <button id="catApplyBtn" class="btn btn-primary dropdown-btn" type="button">确认</button>
+        </div>
       </div>
     </div>
     <select id="sortSelect" class="control" aria-label="排序方式" title="默认顺序">
@@ -725,6 +743,10 @@ button { cursor: pointer; }
           <button id="colClearBtn" class="link-btn" type="button">清空</button>
         </div>
         <div id="columnList" class="dropdown-list"></div>
+        <div class="dropdown-foot">
+          <button id="colCancelBtn" class="btn btn-quiet dropdown-btn" type="button">取消</button>
+          <button id="colApplyBtn" class="btn btn-primary dropdown-btn" type="button">确认</button>
+        </div>
       </div>
     </div>
     <span id="resultCount" class="result-count">0 条</span>
@@ -774,7 +796,7 @@ button { cursor: pointer; }
       <ol>
         <li><strong>内置数据</strong>：打开即载入清单，无需上传；如需查看其他表格，点「上传表格替换」读取 .xlsx / .xls / .csv / .tsv（读取第一个工作表，首行为表头），之后可「恢复内置数据」。</li>
         <li><strong>查看提取结果</strong>：默认显示 8 列（品牌中文、种类、产品名称、折扣、员工价、过期日期、包装、库存），其余列在「隐藏列」里默认勾选隐藏，可自行调整；表头为中文；点击「品牌（中文）」单元格即可复制该名称。</li>
-        <li><strong>筛选与排序</strong>：品牌、种类均为多选（选项来自原表实际内容）；「搜索」框可按任意列关键词全文匹配；「隐藏列」可多选隐藏不需要的列；排序只作用于筛选后的结果，折扣力度按 0.1 → 0.2 由大到小。</li>
+        <li><strong>筛选与排序</strong>：品牌、种类均为多选（选项来自原表实际内容）；「搜索」框可按任意列关键词全文匹配；「隐藏列」可多选隐藏不需要的列；排序只作用于筛选后的结果，折扣力度按 0.1 → 0.2 由大到小。品牌、种类、隐藏列面板均为草稿式：勾选后点「确认」才生效，「取消」或点击面板外放弃更改。</li>
         <li><strong>列宽与省略</strong>：各列使用固定宽度，文字超出列宽时以省略号截断；鼠标悬停在被截断的单元格上会浮出完整内容。</li>
         <li><strong>行高档位与自适应</strong>：− / + 在 9 个行高档位间切换（默认第 5 档为基准，向左逐档压缩行高、向右逐档放大），字号与底部「考虑清单」的字体同步联动；窗口变化时布局自动适配，表格可横向滚动。</li>
         <li><strong>考虑清单</strong>：行尾圆点按钮切换加入状态（灰色未加入、蓝色高亮已加入）；「一键复制」只导出产品名称、员工价、过期日期三列，不含表头。</li>
@@ -1075,10 +1097,13 @@ button { cursor: pointer; }
     matchAlert: $('matchAlert'),
     categoryBtn: $('categoryBtn'), categoryLabel: $('categoryLabel'), categoryPanel: $('categoryPanel'),
     categoryList: $('categoryList'), catAllBtn: $('catAllBtn'), catClearBtn: $('catClearBtn'),
+    catApplyBtn: $('catApplyBtn'), catCancelBtn: $('catCancelBtn'),
     columnBtn: $('columnBtn'), columnLabel: $('columnLabel'), columnBadge: $('columnBadge'), columnPanel: $('columnPanel'),
     columnList: $('columnList'), colAllBtn: $('colAllBtn'), colClearBtn: $('colClearBtn'),
+    colApplyBtn: $('colApplyBtn'), colCancelBtn: $('colCancelBtn'),
     brandBtn: $('brandBtn'), brandLabel: $('brandLabel'), brandPanel: $('brandPanel'),
     brandList: $('brandList'), brandAllBtn: $('brandAllBtn'), brandClearBtn: $('brandClearBtn'),
+    brandApplyBtn: $('brandApplyBtn'), brandCancelBtn: $('brandCancelBtn'),
     searchInput: $('searchInput'), sortSelect: $('sortSelect'),
     zoomOut: $('zoomOut'), zoomIn: $('zoomIn'), zoomValue: $('zoomValue'),
     resultCount: $('resultCount'), tableWrap: $('tableWrap'), dataTable: $('dataTable'),
@@ -1323,14 +1348,20 @@ button { cursor: pointer; }
     els.matchAlert.hidden = false;
   }
 
-  function renderCategoryPanel() {
+  // 下拉面板为「草稿」模式：勾选只改草稿，点「确认」才应用到筛选。
+  var draftCategories = new Set();
+  var draftBrands = new Set();
+  var draftHiddenColumns = new Set();
+
+  function renderCategoryPanel(source) {
+    var src = source || state.selectedCategories;
     els.categoryList.replaceChildren.apply(els.categoryList, state.categories.map(function (cat) {
       var label = document.createElement('label');
       label.className = 'cat-option';
       var input = document.createElement('input');
       input.type = 'checkbox';
       input.value = cat;
-      input.checked = state.selectedCategories.has(cat);
+      input.checked = src.has(cat);
       var span = document.createElement('span');
       span.textContent = cat;
       label.appendChild(input);
@@ -1346,6 +1377,8 @@ button { cursor: pointer; }
   }
 
   function openCategoryPanel() {
+    draftCategories = new Set(state.selectedCategories);
+    renderCategoryPanel(draftCategories);
     els.categoryPanel.hidden = false;
     els.categoryBtn.classList.add('is-open');
     els.categoryBtn.setAttribute('aria-expanded', 'true');
@@ -1361,14 +1394,15 @@ button { cursor: pointer; }
     return COLUMNS.filter(function (col) { return !state.hiddenColumns.has(col.key); });
   }
 
-  function renderColumnPanel() {
+  function renderColumnPanel(source) {
+    var src = source || state.hiddenColumns;
     els.columnList.replaceChildren.apply(els.columnList, COLUMNS.map(function (col) {
       var label = document.createElement('label');
       label.className = 'cat-option';
       var input = document.createElement('input');
       input.type = 'checkbox';
       input.value = col.key;
-      input.checked = state.hiddenColumns.has(col.key);
+      input.checked = src.has(col.key);
       var span = document.createElement('span');
       span.textContent = col.label;
       label.appendChild(input);
@@ -1388,6 +1422,8 @@ button { cursor: pointer; }
   }
 
   function openColumnPanel() {
+    draftHiddenColumns = new Set(state.hiddenColumns);
+    renderColumnPanel(draftHiddenColumns);
     els.columnPanel.hidden = false;
     els.columnBtn.classList.add('is-open');
     els.columnBtn.setAttribute('aria-expanded', 'true');
@@ -1399,14 +1435,15 @@ button { cursor: pointer; }
     els.columnBtn.setAttribute('aria-expanded', 'false');
   }
 
-  function renderBrandPanel() {
+  function renderBrandPanel(source) {
+    var src = source || state.selectedBrands;
     els.brandList.replaceChildren.apply(els.brandList, state.brands.map(function (prod) {
       var label = document.createElement('label');
       label.className = 'cat-option';
       var input = document.createElement('input');
       input.type = 'checkbox';
       input.value = prod;
-      input.checked = state.selectedBrands.has(prod);
+      input.checked = src.has(prod);
       var span = document.createElement('span');
       span.textContent = prod;
       label.appendChild(input);
@@ -1422,6 +1459,8 @@ button { cursor: pointer; }
   }
 
   function openBrandPanel() {
+    draftBrands = new Set(state.selectedBrands);
+    renderBrandPanel(draftBrands);
     els.brandPanel.hidden = false;
     els.brandBtn.classList.add('is-open');
     els.brandBtn.setAttribute('aria-expanded', 'true');
@@ -1736,66 +1775,79 @@ button { cursor: pointer; }
   els.columnPanel.addEventListener('click', function (e) { e.stopPropagation(); });
   els.brandPanel.addEventListener('click', function (e) { e.stopPropagation(); });
   document.addEventListener('click', closePanels);
+  // 勾选 / 全选 / 清空：只改草稿，不触发渲染；「确认」才生效。
+  function syncListChecks(listEl, srcSet) {
+    Array.prototype.forEach.call(listEl.querySelectorAll('input'), function (i) {
+      i.checked = srcSet.has(i.value);
+    });
+  }
+
   els.categoryList.addEventListener('change', function (e) {
     var input = e.target;
     if (!input || input.type !== 'checkbox') return;
-    if (input.checked) state.selectedCategories.add(input.value);
-    else state.selectedCategories.delete(input.value);
-    state.page = 1;
-    render();
+    if (input.checked) draftCategories.add(input.value);
+    else draftCategories.delete(input.value);
   });
   els.catAllBtn.addEventListener('click', function () {
-    state.selectedCategories = new Set(state.categories);
-    Array.prototype.forEach.call(els.categoryList.querySelectorAll('input'), function (i) { i.checked = true; });
-    state.page = 1;
-    render();
+    draftCategories = new Set(state.categories);
+    syncListChecks(els.categoryList, draftCategories);
   });
   els.catClearBtn.addEventListener('click', function () {
-    state.selectedCategories = new Set();
-    Array.prototype.forEach.call(els.categoryList.querySelectorAll('input'), function (i) { i.checked = false; });
+    draftCategories = new Set();
+    syncListChecks(els.categoryList, draftCategories);
+  });
+  els.catApplyBtn.addEventListener('click', function () {
+    state.selectedCategories = new Set(draftCategories);
     state.page = 1;
     render();
+    closePanels();
   });
+  els.catCancelBtn.addEventListener('click', function () { closePanels(); });
+
   els.brandList.addEventListener('change', function (e) {
     var input = e.target;
     if (!input || input.type !== 'checkbox') return;
-    if (input.checked) state.selectedBrands.add(input.value);
-    else state.selectedBrands.delete(input.value);
-    state.page = 1;
-    render();
+    if (input.checked) draftBrands.add(input.value);
+    else draftBrands.delete(input.value);
   });
   els.brandAllBtn.addEventListener('click', function () {
-    state.selectedBrands = new Set(state.brands);
-    Array.prototype.forEach.call(els.brandList.querySelectorAll('input'), function (i) { i.checked = true; });
-    state.page = 1;
-    render();
+    draftBrands = new Set(state.brands);
+    syncListChecks(els.brandList, draftBrands);
   });
   els.brandClearBtn.addEventListener('click', function () {
-    state.selectedBrands = new Set();
-    Array.prototype.forEach.call(els.brandList.querySelectorAll('input'), function (i) { i.checked = false; });
+    draftBrands = new Set();
+    syncListChecks(els.brandList, draftBrands);
+  });
+  els.brandApplyBtn.addEventListener('click', function () {
+    state.selectedBrands = new Set(draftBrands);
     state.page = 1;
     render();
+    closePanels();
   });
+  els.brandCancelBtn.addEventListener('click', function () { closePanels(); });
+
   els.columnList.addEventListener('change', function (e) {
     var input = e.target;
     if (!input || input.type !== 'checkbox') return;
-    if (input.checked) state.hiddenColumns.add(input.value);
-    else state.hiddenColumns.delete(input.value);
-    renderHead();
-    render();
+    if (input.checked) draftHiddenColumns.add(input.value);
+    else draftHiddenColumns.delete(input.value);
   });
   els.colAllBtn.addEventListener('click', function () {
-    state.hiddenColumns = new Set(COLUMNS.map(function (c) { return c.key; }));
-    Array.prototype.forEach.call(els.columnList.querySelectorAll('input'), function (i) { i.checked = true; });
-    renderHead();
-    render();
+    draftHiddenColumns = new Set(COLUMNS.map(function (c) { return c.key; }));
+    syncListChecks(els.columnList, draftHiddenColumns);
   });
   els.colClearBtn.addEventListener('click', function () {
-    state.hiddenColumns = new Set();
-    Array.prototype.forEach.call(els.columnList.querySelectorAll('input'), function (i) { i.checked = false; });
+    draftHiddenColumns = new Set();
+    syncListChecks(els.columnList, draftHiddenColumns);
+  });
+  els.colApplyBtn.addEventListener('click', function () {
+    state.hiddenColumns = new Set(draftHiddenColumns);
+    state.page = 1;
     renderHead();
     render();
+    closePanels();
   });
+  els.colCancelBtn.addEventListener('click', function () { closePanels(); });
 
   els.searchInput.addEventListener('input', function (e) {
     state.query = e.target.value;
